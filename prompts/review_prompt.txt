@@ -1,0 +1,5 @@
+# Review Prompt
+
+Review the generated test cases for correctness, completeness, and flakiness risks.
+
+Provide: suggestions, detected issues, and a revised version annotated with rationale.

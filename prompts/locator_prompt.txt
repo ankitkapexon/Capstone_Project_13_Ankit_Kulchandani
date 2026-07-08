@@ -1,0 +1,9 @@
+# Locator Prompt
+
+Given an element screenshot and DOM/structure description, propose robust locators and fallback strategies.
+
+Return:
+- preferred locator
+- fallbacks
+- confidence score
+- notes about potential flakiness

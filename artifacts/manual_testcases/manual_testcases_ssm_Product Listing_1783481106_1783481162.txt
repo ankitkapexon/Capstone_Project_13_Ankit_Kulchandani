@@ -1,0 +1,104 @@
+Screen: Product Listing
+
+Test Case 1: Verify Product Listing screen loads with key browsing controls
+Description: Validate that the Product Listing screen displays the core UI components required for catalog browsing and product discovery.
+Steps:
+  1. Launch the app and navigate to the Product Listing screen.
+  2. Observe the top and main content areas of the screen.
+  3. Verify the presence of the Search field.
+  4. Verify the presence of the Category filter control.
+  5. Verify the presence of the Sort button.
+  6. Verify that at least one Product item card is displayed in the listing area.
+Expected Result:
+  - The Product Listing screen opens successfully.
+  - The Search field is visible and accessible.
+  - The Category filter control is visible and tappable.
+  - The Sort button is visible and tappable.
+  - Product item cards are displayed for browsing.
+
+Test Case 2: Search for a product using the Search field
+Description: Verify that users can search the catalog by entering a product keyword in the Search field.
+Steps:
+  1. Open the Product Listing screen.
+  2. Tap the Search field.
+  3. Enter a valid product keyword.
+  4. Submit or wait for the search results to refresh.
+  5. Review the displayed Product item cards.
+Expected Result:
+  - The Search field accepts text input.
+  - The product list refreshes based on the entered keyword.
+  - Displayed Product item cards are relevant to the search term.
+
+Test Case 3: Verify search with partial keyword input
+Description: Validate that the Search field supports partial text input and returns matching or related product results.
+Steps:
+  1. Open the Product Listing screen.
+  2. Tap the Search field.
+  3. Enter a partial product name or incomplete keyword.
+  4. Submit the search or wait for the listing to update.
+  5. Review the visible Product item cards.
+Expected Result:
+  - The Search field accepts partial text.
+  - The listing updates without error.
+  - Matching or related Product item cards are shown when applicable.
+
+Test Case 4: Verify search with non-matching keyword
+Description: Validate behavior when the user searches for a product that does not exist in the catalog.
+Steps:
+  1. Open the Product Listing screen.
+  2. Tap the Search field.
+  3. Enter a random or invalid keyword that is unlikely to match any product.
+  4. Submit the search or wait for the results to refresh.
+  5. Observe the listing area.
+Expected Result:
+  - The app handles the non-matching search gracefully.
+  - No crash or UI corruption occurs.
+  - The screen shows either no Product item cards or an appropriate empty state/message.
+
+Test Case 5: Verify search field can be cleared and product list resets
+Description: Ensure that clearing the Search field restores the default product catalog view.
+Steps:
+  1. Open the Product Listing screen.
+  2. Use the Search field to enter a valid keyword and confirm filtered results appear.
+  3. Clear the text from the Search field.
+  4. Dismiss the keyboard if needed.
+  5. Observe the Product item list.
+Expected Result:
+  - The Search field text is removed successfully.
+  - The product list resets to the default or broader catalog state.
+  - Product item cards are shown according to the unfiltered listing.
+
+Test Case 6: Apply Category filter to narrow product results
+Description: Verify that the Category filter can be used to refine the product listing.
+Steps:
+  1. Open the Product Listing screen.
+  2. Tap the Category filter control.
+  3. Select an available category option.
+  4. Confirm or apply the filter if required.
+  5. Review the visible Product item cards.
+Expected Result:
+  - The Category filter opens successfully.
+  - A category can be selected.
+  - The product listing refreshes to show only products relevant to the selected category.
+
+Test Case 7: Change category filter selection
+Description: Validate that users can switch from one category to another and see updated product results.
+Steps:
+  1. Open the Product Listing screen.
+  2. Tap Category filter and select one category.
+  3. Verify the product list updates.
+  4. Tap Category filter again.
+  5. Select a different category.
+  6. Review the updated Product item cards.
+Expected Result:
+  - The second category selection is accepted.
+  - The listing refreshes according to the newly selected category.
+  - Results change appropriately between category selections.
+
+Test Case 8: Verify Sort reorders product listing
+Description: Ensure that the Sort button provides sorting functionality and changes the order of displayed products.
+Steps:
+  1. Open the Product Listing screen.
+  2. Observe the current order of Product item cards.
+  3. Tap the Sort button.
+  4.

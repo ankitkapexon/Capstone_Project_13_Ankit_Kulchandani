@@ -1,0 +1,42 @@
+{
+  "screen_name": "Login",
+  "screen_purpose": "Authenticate user",
+  "source": null,
+  "source_image": null,
+  "elements": [
+    {
+      "id": null,
+      "label": "Username",
+      "type": "textfield",
+      "actions": [
+        "enter_text"
+      ],
+      "bbox": null,
+      "confidence": 0.63,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Password",
+      "type": "textfield",
+      "actions": [
+        "enter_text"
+      ],
+      "bbox": null,
+      "confidence": 0.63,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Login",
+      "type": "button",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.68,
+      "metadata": {}
+    }
+  ],
+  "metadata": {}
+}

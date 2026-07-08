@@ -1,0 +1,54 @@
+{
+  "screen_name": "Product Listing",
+  "screen_purpose": "Browse and select products from a catalog",
+  "source": null,
+  "source_image": null,
+  "elements": [
+    {
+      "id": null,
+      "label": "Search",
+      "type": "search_field",
+      "actions": [
+        "tap",
+        "enter_text"
+      ],
+      "bbox": null,
+      "confidence": 0.22,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Category filter",
+      "type": "filter",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.18,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Sort",
+      "type": "button",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.16,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Product item",
+      "type": "product_card",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.31,
+      "metadata": {}
+    }
+  ],
+  "metadata": {}
+}

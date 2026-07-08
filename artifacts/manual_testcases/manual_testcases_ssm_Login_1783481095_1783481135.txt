@@ -1,0 +1,107 @@
+Screen: Login
+
+Test Case 1: Successful login with valid username and password
+Description: Verify that a user can authenticate successfully using valid credentials through the Username and Password fields and the Login button.
+Steps:
+  1. Launch the app and navigate to the Login screen.
+  2. Tap the Username text field.
+  3. Enter a valid registered username.
+  4. Tap the Password text field.
+  5. Enter the correct password for the same account.
+  6. Tap the Login button.
+Expected Result:
+  - The entered credentials are accepted.
+  - The user is authenticated successfully.
+  - The app navigates to the next authorized area of the application without showing an error.
+
+Test Case 2: Login attempt with invalid password
+Description: Verify that authentication fails when a valid username is entered with an incorrect password.
+Steps:
+  1. Open the Login screen.
+  2. Enter a valid registered username in the Username field.
+  3. Enter an incorrect password in the Password field.
+  4. Tap the Login button.
+Expected Result:
+  - Login is rejected.
+  - The user remains on the Login screen.
+  - An appropriate authentication failure message is shown, or access is otherwise denied clearly.
+
+Test Case 3: Login attempt with unregistered username
+Description: Verify that the app does not allow login when the Username field contains an account that does not exist.
+Steps:
+  1. Open the Login screen.
+  2. Enter an unregistered or non-existent username in the Username field.
+  3. Enter any password in the Password field.
+  4. Tap the Login button.
+Expected Result:
+  - Login is rejected.
+  - The user stays on the Login screen.
+  - A clear error indication is shown for invalid credentials or unknown account.
+
+Test Case 4: Login with both Username and Password left blank
+Description: Verify validation behavior when the user tries to log in without entering any credentials.
+Steps:
+  1. Open the Login screen.
+  2. Leave the Username field empty.
+  3. Leave the Password field empty.
+  4. Tap the Login button.
+Expected Result:
+  - The app does not log the user in.
+  - Required field validation is displayed, or submission is blocked clearly.
+  - The user remains on the Login screen.
+
+Test Case 5: Login with blank Username only
+Description: Verify that the Username field is required before authentication can proceed.
+Steps:
+  1. Open the Login screen.
+  2. Leave the Username field empty.
+  3. Enter a valid password in the Password field.
+  4. Tap the Login button.
+Expected Result:
+  - Login is not performed.
+  - The app indicates that the Username field is required or invalid.
+  - The user stays on the Login screen.
+
+Test Case 6: Login with blank Password only
+Description: Verify that the Password field is required before authentication can proceed.
+Steps:
+  1. Open the Login screen.
+  2. Enter a valid username in the Username field.
+  3. Leave the Password field empty.
+  4. Tap the Login button.
+Expected Result:
+  - Login is not performed.
+  - The app indicates that the Password field is required or invalid.
+  - The user stays on the Login screen.
+
+Test Case 7: Password field accepts secure input during entry
+Description: Verify that the Password text field behaves as a password entry control and protects entered characters.
+Steps:
+  1. Open the Login screen.
+  2. Tap the Password text field.
+  3. Enter a password containing letters, numbers, and special characters.
+Expected Result:
+  - The Password field accepts the input.
+  - Entered password characters are masked or otherwise protected from plain visibility during input.
+
+Test Case 8: Username field accepts standard username input
+Description: Verify that the Username field allows the user to enter a normal username value for authentication.
+Steps:
+  1. Open the Login screen.
+  2. Tap the Username text field.
+  3. Enter a typical valid username value.
+Expected Result:
+  - The Username field accepts the entered text correctly.
+  - The entered username remains visible and editable in the field.
+
+Test Case 9: Login with trimmed or accidental leading and trailing spaces in Username and Password
+Description: Verify how the app handles accidental spaces entered before or after credentials in the Username and Password fields.
+Steps:
+  1. Open the Login screen.
+  2. Enter a valid username with leading and trailing spaces in the Username field.
+  3. Enter the correct password with leading and trailing spaces in the Password field.
+  4. Tap the Login button.
+Expected Result:
+  - The app handles spaces consistently according to credential rules.
+  - If spaces are meant to be ignored, login succeeds with trimmed values.
+  - If spaces are treated as literal input, login fails with a clear invalid credential response.
