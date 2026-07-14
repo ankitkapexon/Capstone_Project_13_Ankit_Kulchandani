@@ -1,0 +1,72 @@
+{
+  "screen_name": "Cart",
+  "screen_purpose": "Review selected items before checkout",
+  "source": null,
+  "source_image": null,
+  "elements": [
+    {
+      "id": null,
+      "label": "Cart title",
+      "type": "text",
+      "actions": [],
+      "bbox": null,
+      "confidence": 0.33,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Cart items",
+      "type": "list",
+      "actions": [
+        "scroll",
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.41,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Quantity controls",
+      "type": "stepper",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.28,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Remove item",
+      "type": "button",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.24,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Subtotal",
+      "type": "text",
+      "actions": [],
+      "bbox": null,
+      "confidence": 0.22,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Checkout",
+      "type": "button",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.38,
+      "metadata": {}
+    }
+  ],
+  "metadata": {}
+}
