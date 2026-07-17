@@ -5,6 +5,18 @@ Android Appium Page Object Model test framework, using LLMs.
 
 ---
 
+## What This Repo Does
+
+- Turns a mobile app screenshot into structured screen data (Vision Agent)
+- Turns that screen data into manual test cases (Test Case Agent)
+- Turns those test cases into runnable Android Appium test scripts, following
+  Page Object Model - locators + actions in one file, test steps in another
+  (Appium Script Generator Agent)
+- Works with OpenAI directly, any OpenAI-compatible LLM gateway (including an
+  internal company LLM), or fully offline in mock mode with no API key
+
+---
+
 ## Project Structure
 
 ```
@@ -67,27 +79,14 @@ bash scripts/setup_env.sh
 
 ### 2. Configure your `.env` file
 
-```dotenv
-VISION_AGENT_PROVIDER=openai
-TESTCASE_AGENT_PROVIDER=openai
-APPIUM_AGENT_PROVIDER=openai
-OPENAI_API_KEY=your_api_key_here
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_API_BASE=https://api.openai.com/v1   # Optional – override for custom gateways
-
-# Step 3 (Appium script generation / execution) only - Android is the current focus.
-# MOBILE_PLATFORM=ios is reserved for later; conftest.py raises NotImplementedError for it today.
-MOBILE_PLATFORM=android
-APPIUM_SERVER_URL=http://127.0.0.1:4723
-ANDROID_APP_PATH=demo_mobile_apps/mda-2.2.0-25.apk
+Copy the template and fill in your values:
+```bash
+cp .env.example .env
 ```
+Ask your team lead for the real `OPENAI_API_KEY` / `OPENAI_API_BASE` / `OPENAI_MODEL`
+values (or your own OpenAI key). `.env` is gitignored - never commit it.
 
-To test without an API key, set all three providers to `mock`:
-```dotenv
-VISION_AGENT_PROVIDER=mock
-TESTCASE_AGENT_PROVIDER=mock
-APPIUM_AGENT_PROVIDER=mock
-```
+To run fully offline with no LLM, set all three `*_AGENT_PROVIDER` vars in `.env` to `mock`.
 
 ---
 

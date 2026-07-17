@@ -126,28 +126,13 @@ bash scripts/setup_env.sh
 
 ### 2 — Configure `.env`
 
-Copy `.env.example` (or create `.env`) with:
-```dotenv
-VISION_AGENT_PROVIDER=openai
-TESTCASE_AGENT_PROVIDER=openai
-APPIUM_AGENT_PROVIDER=openai
-OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_API_BASE=https://api.openai.com/v1   # override for internal gateways
-
-# Step 3 (Appium script generation / execution) only - Android is the current focus.
-# MOBILE_PLATFORM=ios is reserved for later; conftest.py raises NotImplementedError for it today.
-MOBILE_PLATFORM=android
-APPIUM_SERVER_URL=http://127.0.0.1:4723
-ANDROID_APP_PATH=demo_mobile_apps/mda-2.2.0-25.apk
+```bash
+cp .env.example .env
 ```
+Ask your team lead for the real `OPENAI_API_KEY` / `OPENAI_API_BASE` / `OPENAI_MODEL` values
+(or your own OpenAI key). `.env` is gitignored — never commit it.
 
-For offline / no-key testing:
-```dotenv
-VISION_AGENT_PROVIDER=mock
-TESTCASE_AGENT_PROVIDER=mock
-APPIUM_AGENT_PROVIDER=mock
-```
+For offline / no-key testing, set all three `*_AGENT_PROVIDER` vars in `.env` to `mock`.
 
 ### 3 — Place screenshots
 
