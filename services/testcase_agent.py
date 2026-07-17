@@ -28,7 +28,7 @@ class OpenAITestCaseAgent(TestCaseAgent):
             "max_tokens": 1024,
         }
 
-        if self.model.lower().startswith("gpt-5"):
+        if "gpt-5" in self.model.lower():
             request_kwargs["temperature"] = 1
         else:
             request_kwargs["temperature"] = 0

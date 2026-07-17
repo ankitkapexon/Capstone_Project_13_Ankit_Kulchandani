@@ -37,7 +37,7 @@ class OpenAIVisionAgent(VisionAgent):
             "max_tokens": 1024,
         }
 
-        if str(self.model_name).lower().startswith("gpt-5"):
+        if "gpt-5" in str(self.model_name).lower():
             request_kwargs["temperature"] = 1
         else:
             request_kwargs["temperature"] = 0
