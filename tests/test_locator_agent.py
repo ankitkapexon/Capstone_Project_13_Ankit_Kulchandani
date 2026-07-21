@@ -41,25 +41,28 @@ class LocatorAgentTests(unittest.TestCase):
         self.assertEqual(locator["locator_value"], "checkout_button")
 
     def test_generate_locators_falls_back_to_text_when_no_real_locator_exists(self) -> None:
+        # "Widget Zeta" is deliberately not one of the app-specific fallback labels
+        # (login/username/cart/etc.) so this exercises the generic text fallback,
+        # not the hardcoded MyDemoApp shortcut.
         agent = LocatorAgent()
         ssm_payload = {
             "screen_name": "Login",
             "elements": [
                 {
-                    "label": "Login",
+                    "label": "Widget Zeta",
                     "type": "button",
                     "actions": ["tap"],
                     "confidence": 0.68,
                 }
             ],
         }
-        test_case_text = "Tap the Login button"
+        test_case_text = "Tap the Widget Zeta button"
 
         result = agent.generate_locators(ssm_payload, test_case_text)
 
         locator = result["elements"][0]
         self.assertEqual(locator["locator_strategy"], "text")
-        self.assertEqual(locator["locator_value"], "Login")
+        self.assertEqual(locator["locator_value"], "widget zeta")
 
     def test_generate_locators_rejects_empty_test_cases(self) -> None:
         agent = LocatorAgent()

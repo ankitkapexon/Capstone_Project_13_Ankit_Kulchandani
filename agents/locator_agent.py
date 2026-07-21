@@ -287,10 +287,9 @@ class LocatorAgent:
         return existing_action or new_action
 
     def _select_locator_strategy(self, element: Dict[str, Any]) -> tuple[str, str]:
-        """Choose the best available locator strategy."""
-        override = self._guess_saucelabs_locator(element)
-        if override:
-                return override
+        """Choose the best available locator strategy. Real locator hints already
+        present on the SSM element (accessibility id, resource id, ...) always take
+        priority over the hardcoded MyDemoApp fallback guess further down."""
         # 1. Accessibility ID
         value = self._extract_locator_value(
             element,

@@ -1,0 +1,16 @@
+{
+  "Product Listing": [],
+  "Login": [
+    {"action": "tap", "locator_strategy": "resource_id", "locator_value": "com.saucelabs.mydemoapp.android:id/menuIV"},
+    {"action": "tap", "locator_strategy": "accessibility_id", "locator_value": "Login Menu Item"}
+  ],
+  "Cart": [
+    {"action": "tap", "locator_strategy": "resource_id", "locator_value": "com.saucelabs.mydemoapp.android:id/productIV"},
+    {"action": "tap", "locator_strategy": "resource_id", "locator_value": "com.saucelabs.mydemoapp.android:id/cartBt"},
+    {"action": "back"},
+    {"action": "tap", "locator_strategy": "resource_id", "locator_value": "com.saucelabs.mydemoapp.android:id/cartIV"}
+  ],
+  "Product Details": [
+    {"action": "tap", "locator_strategy": "resource_id", "locator_value": "com.saucelabs.mydemoapp.android:id/productIV"}
+  ]
+}

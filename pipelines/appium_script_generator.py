@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from services.config import load_environment
-from services.appium_agent import create_appium_agent
+from services.appium_agent import create_appium_agent, load_locator_data, load_navigation_map, load_navigation_steps
 
 load_environment()
 
@@ -64,6 +64,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     testcase_files = sorted(p for p in testcases_folder.iterdir() if p.suffix.lower() == ".txt")
+    navigation_map = load_navigation_map()
 
     out_dir_path = Path(out)
     if clean and out_dir_path.exists():
@@ -88,7 +89,24 @@ def main(argv: list[str] | None = None) -> int:
             ssm_data = json.loads(ssm_file.read_text(encoding="utf-8"))
             testcases_text = testcase_file.read_text(encoding="utf-8")
 
-            files = agent.generate(ssm_data, testcases_text, filename=ssm_file.stem)
+            screen_name = ssm_data.get("screen_name") or ssm_file.stem
+            locator_data = load_locator_data(screen_name)
+            if locator_data is not None:
+                print(f"Using resolved locators for {screen_name}")
+            else:
+                print(f"No locator file found for {screen_name}; falling back to guessed locators.")
+
+            navigation_steps = load_navigation_steps(screen_name, navigation_map)
+            if navigation_steps:
+                print(f"Using navigation steps for {screen_name}: {len(navigation_steps)} step(s)")
+
+            files = agent.generate(
+                ssm_data,
+                testcases_text,
+                filename=ssm_file.stem,
+                locator_data=locator_data,
+                navigation_steps=navigation_steps,
+            )
 
             for relative_path, content in files.items():
                 out_path = out_dir_path / relative_path

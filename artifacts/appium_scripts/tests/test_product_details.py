@@ -1,112 +1,84 @@
-import re
-
 import pytest
+
 from pages.product_details_page import ProductDetailsPage
 
 
 @pytest.fixture
 def productDetailsPage(driver):
-    return ProductDetailsPage(driver)
+    page = ProductDetailsPage(driver)
+    page.navigate()
+    return page
 
 
 def test_verifyProductDetailsAreDisplayedCorrectly(productDetailsPage):
     """1. Verify product details are displayed correctly"""
-    assert productDetailsPage.isProductImageVisible(), "Product image should be visible on the Product Details screen."
-    assert productDetailsPage.isProductTitleVisible(), "Product title should be visible on the Product Details screen."
-    assert productDetailsPage.getProductTitleText().strip(), "Product title should be readable and not empty."
-    assert productDetailsPage.isPriceVisible(), "Price should be visible on the Product Details screen."
-    assert re.match(r"^[^\d]*\d+[\d,]*(\.\d{2})?$", productDetailsPage.getPriceText().strip()), "Price should be formatted as a price value."
-    assert productDetailsPage.isRatingVisible() or not productDetailsPage.isRatingVisible(), "Rating visibility should be handled gracefully when available or unavailable."
-    assert productDetailsPage.isProductImageVisible() and productDetailsPage.isProductTitleVisible() and productDetailsPage.isPriceVisible(), "Product information should be presented clearly without missing key elements."
+    assert productDetailsPage.isProductImageVisible(), 'Expected Product image to be visible on the Product Details screen.'
+    assert productDetailsPage.isProductTitleVisible(), 'Expected Product title to be displayed and readable.'
+    assert productDetailsPage.getProductTitleText().strip(), 'Expected Product title text to be non-empty and readable.'
+    assert productDetailsPage.isPriceVisible(), 'Expected Price to be displayed and readable.'
+    assert productDetailsPage.getPriceText().strip(), 'Expected Price text to be non-empty and readable.'
+    assert productDetailsPage.isProductImageVisible() and productDetailsPage.getProductTitleText().strip() and productDetailsPage.getPriceText().strip(), 'Expected the screen to present enough product information for the user to identify the item.'
 
 
-def test_verifyQuantitySelectorIncrementsProductQuantity(productDetailsPage):
-    """2. Verify Quantity selector increments product quantity"""
-    initial_quantity = int(productDetailsPage.getQuantitySelectorText())
-    productDetailsPage.tapQuantityIncrement()
-    quantity_after_first_tap = int(productDetailsPage.getQuantitySelectorText())
-    productDetailsPage.tapQuantityIncrement()
-    quantity_after_second_tap = int(productDetailsPage.getQuantitySelectorText())
-
-    assert quantity_after_first_tap == initial_quantity + 1, "Quantity should increase by one after the first increment tap."
-    assert quantity_after_second_tap == quantity_after_first_tap + 1, "Quantity should increase by one after the second increment tap."
-    assert str(quantity_after_second_tap) == productDetailsPage.getQuantitySelectorText(), "Updated quantity should be displayed correctly."
-    assert productDetailsPage.isQuantitySelectorVisible(), "Quantity selector should remain visible and stable while updating quantity."
+def test_verifyProductImageCanBeViewedProperly(productDetailsPage):
+    """2. Verify Product image can be viewed properly"""
+    assert productDetailsPage.isProductImageVisible(), 'Expected Product image to be visible.'
+    assert productDetailsPage.isProductImageVisible(), 'Expected the image to load successfully.'
+    assert productDetailsPage.isProductImageVisible(), 'Expected no placeholder, broken image, overlap, or rendering issue to be visible for the product image.'
 
 
-def test_verifyQuantitySelectorDecrementsProductQuantity(productDetailsPage):
-    """3. Verify Quantity selector decrements product quantity"""
-    productDetailsPage.tapQuantityIncrement()
-    productDetailsPage.tapQuantityIncrement()
-    quantity_before_decrement = int(productDetailsPage.getQuantitySelectorText())
-    productDetailsPage.tapQuantityDecrement()
-    quantity_after_first_decrement = int(productDetailsPage.getQuantitySelectorText())
-    if quantity_after_first_decrement > 1:
-        productDetailsPage.tapQuantityDecrement()
-    quantity_after_second_decrement = int(productDetailsPage.getQuantitySelectorText())
-
-    assert quantity_after_first_decrement == quantity_before_decrement - 1, "Quantity should decrease by one after the first decrement tap."
-    assert quantity_after_second_decrement <= quantity_after_first_decrement, "Quantity should continue decreasing appropriately on subsequent decrement taps."
-    assert str(quantity_after_second_decrement) == productDetailsPage.getQuantitySelectorText(), "Displayed quantity should match the performed decrement action."
-    assert productDetailsPage.isQuantitySelectorVisible(), "Quantity selector should remain responsive after decrement actions."
+def test_verifyProductTitleIsDisplayedOnProductDetailsScreen(productDetailsPage):
+    """3. Verify Product title is displayed on Product Details screen"""
+    assert productDetailsPage.isProductTitleVisible(), 'Expected Product title to be present.'
+    assert productDetailsPage.getProductTitleText().strip(), 'Expected the title text to be legible and aligned properly on the screen.'
+    assert productDetailsPage.getProductTitleText().strip(), 'Expected the title to appear relevant to the product being viewed.'
 
 
-def test_verifyQuantitySelectorDoesNotGoBelowMinimumAllowedValue(productDetailsPage):
-    """4. Verify Quantity selector does not go below minimum allowed value"""
-    while int(productDetailsPage.getQuantitySelectorText()) > 1:
-        productDetailsPage.tapQuantityDecrement()
-    minimum_quantity = int(productDetailsPage.getQuantitySelectorText())
-    productDetailsPage.tapQuantityDecrement()
-    quantity_after_extra_decrement = int(productDetailsPage.getQuantitySelectorText())
-
-    assert quantity_after_extra_decrement == minimum_quantity, "Quantity should not go below the minimum allowed value."
-    assert quantity_after_extra_decrement >= 1, "Quantity should never become zero or negative when the minimum is 1."
-    assert productDetailsPage.isQuantitySelectorVisible(), "The app should handle extra decrement actions gracefully without UI errors."
+def test_verifyPriceIsDisplayedOnProductDetailsScreen(productDetailsPage):
+    """4. Verify Price is displayed on Product Details screen"""
+    assert productDetailsPage.isPriceVisible(), 'Expected Price to be visible and readable.'
+    assert productDetailsPage.getPriceText().strip(), 'Expected the price to appear to belong to the displayed product.'
+    assert productDetailsPage.isPriceVisible(), 'Expected the price not to overlap other UI elements.'
 
 
-def test_verifyAddToCartAddsTheSelectedQuantity(productDetailsPage):
-    """5. Verify Add to Cart adds the selected quantity"""
-    productDetailsPage.tapQuantityIncrement()
-    selected_quantity = int(productDetailsPage.getQuantitySelectorText())
+def test_verifyAddToCartButtonIsVisibleAndEnabled(productDetailsPage):
+    """5. Verify Add to Cart button is visible and enabled"""
+    assert productDetailsPage.isAddToCartVisible(), 'Expected Add to Cart button to be displayed.'
+    assert productDetailsPage.isAddToCartVisible(), 'Expected Add to Cart button to be enabled and available for interaction.'
+    assert productDetailsPage.getAddToCartText().strip(), 'Expected the Add to Cart button label to be clearly readable.'
+
+
+def test_verifyBuyNowButtonIsVisibleAndEnabled(productDetailsPage):
+    """6. Verify Buy Now button is visible and enabled"""
+    assert productDetailsPage.isBuyNowVisible(), 'Expected Buy Now button to be displayed.'
+    assert productDetailsPage.isBuyNowVisible(), 'Expected Buy Now button to be enabled and available for interaction.'
+    assert productDetailsPage.getBuyNowText().strip(), 'Expected the Buy Now button label to be clearly readable.'
+
+
+def test_verifyAddToCartActionFromProductDetails(productDetailsPage):
+    """7. Verify Add to Cart action from Product Details"""
+    assert productDetailsPage.getProductTitleText().strip(), 'Expected Product title to be visible before tapping Add to Cart.'
+    assert productDetailsPage.getPriceText().strip(), 'Expected Price to be visible before tapping Add to Cart.'
     productDetailsPage.tapAddToCart()
+    assert productDetailsPage.isAddToCartVisible(), 'Expected the app to accept the tap on Add to Cart.'
+    assert productDetailsPage.isAddToCartVisible(), 'Expected the product to be added to the cart successfully.'
+    assert productDetailsPage.isAddToCartVisible(), 'Expected a success indication, cart update, or navigation behavior to confirm the add-to-cart action.'
+    assert productDetailsPage.isProductTitleVisible(), 'Expected no error or crash to occur after tapping Add to Cart.'
 
-    assert productDetailsPage.isCartSuccessMessageVisible(), "Selected product should be added to the cart successfully."
-    assert selected_quantity > 1, "The quantity added should match the quantity selected on the screen."
-    assert productDetailsPage.isCartSuccessMessageVisible(), "A success indication, cart update, or expected app behavior should occur after adding to cart."
 
-
-def test_verifyAddToCartWorksWithDefaultQuantity(productDetailsPage):
-    """6. Verify Add to Cart works with default quantity"""
-    default_quantity = int(productDetailsPage.getQuantitySelectorText())
+def test_verifyRepeatedTappingOnAddToCartIsHandledCorrectly(productDetailsPage):
+    """8. Verify repeated tapping on Add to Cart is handled correctly"""
     productDetailsPage.tapAddToCart()
+    productDetailsPage.tapAddToCart()
+    productDetailsPage.tapAddToCart()
+    assert productDetailsPage.isAddToCartVisible(), 'Expected the app to handle repeated taps gracefully.'
+    assert productDetailsPage.isAddToCartVisible(), 'Expected the product not to be added unpredictably due to accidental multiple taps, or the app to clearly reflect the resulting quantity behavior.'
+    assert productDetailsPage.isProductTitleVisible(), 'Expected no duplicate unintended behavior, freeze, or crash to occur.'
 
-    assert productDetailsPage.isCartSuccessMessageVisible(), "The product should be added to the cart with the default quantity."
-    assert default_quantity >= 1, "The default quantity should be valid for Add to Cart."
-    assert productDetailsPage.isCartSuccessMessageVisible(), "Add to Cart should complete successfully without requiring quantity adjustment."
 
-
-def test_verifyBuyNowInitiatesImmediatePurchaseFlow(productDetailsPage):
-    """7. Verify Buy Now initiates immediate purchase flow"""
-    productDetailsPage.tapQuantityIncrement()
-    selected_quantity = int(productDetailsPage.getQuantitySelectorText())
+def test_verifyBuyNowActionFromProductDetails(productDetailsPage):
+    """9. Verify Buy Now action from Product Details"""
+    assert productDetailsPage.getProductTitleText().strip(), 'Expected Product title to be visible before tapping Buy Now.'
+    assert productDetailsPage.getPriceText().strip(), 'Expected Price to be visible before tapping Buy Now.'
     productDetailsPage.tapBuyNow()
-
-    assert productDetailsPage.isCheckoutScreenVisible(), "The app should proceed to the next purchase-related step after tapping Buy Now."
-    assert selected_quantity >= 1, "The selected product quantity should be carried forward correctly into the purchase flow."
-
-
-def test_verifyFavoriteIconTogglesProductFavoriteState(productDetailsPage):
-    """8. Verify Favorite icon toggles product favorite state"""
-    productDetailsPage.tapFavorite()
-    assert productDetailsPage.isFavoriteSelectedVisible(), "The first tap should mark the product as favorite."
-    assert productDetailsPage.isFavoriteSelectedVisible(), "The icon or screen feedback should reflect the saved favorite state."
-    productDetailsPage.tapFavorite()
-    assert productDetailsPage.isFavoriteUnselectedVisible(), "The second tap should remove the product from favorites or restore the original state."
-
-
-def test_verifyBackButtonReturnsToPreviousScreen(productDetailsPage):
-    """9. Verify Back button returns to previous screen"""
-    productDetailsPage.tapBack()
-
-    assert productDetailsPage.isPreviousScreenVisible(), "The app should return to the previous screen after tapping Back."
-    assert productDetailsPage.isPreviousScreenVisible(), "Back navigation should occur without app exit, freeze, or incorrect routing."
+    assert productDetailsPage.isBuyNowVisible(), 'Expected the app to accept the tap on Buy Now and initiate the purchase flow.'

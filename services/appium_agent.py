@@ -2,11 +2,59 @@ import ast
 import json
 import os
 import re
-from typing import Any, Dict, List, Set
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set
 
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
+
+ARTIFACTS_ROOT = Path(__file__).resolve().parents[1] / "artifacts"
+
+
+def _normalize_screen_key(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", str(name or "").lower())
+
+
+def find_locator_file(screen_name: str, locator_dir: Path | None = None) -> Optional[Path]:
+    """Locate the artifacts/locator_output/locator_<screen>.json file for a screen,
+    tolerating spacing/casing differences between the SSM's screen_name and the
+    locator file's slug."""
+    locator_dir = locator_dir or (ARTIFACTS_ROOT / "locator_output")
+    if not locator_dir.exists():
+        return None
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", screen_name.strip()).strip("_")
+    for candidate in (locator_dir / f"locator_{slug}.json", locator_dir / f"locator_{screen_name}.json"):
+        if candidate.exists():
+            return candidate
+    target = _normalize_screen_key(screen_name)
+    for candidate in locator_dir.glob("locator_*.json"):
+        if _normalize_screen_key(candidate.stem[len("locator_"):]) == target:
+            return candidate
+    return None
+
+
+def load_locator_data(screen_name: str, locator_dir: Path | None = None) -> Optional[Dict[str, Any]]:
+    """Load the resolved-locators payload for a screen, or None if not captured yet."""
+    locator_file = find_locator_file(screen_name, locator_dir)
+    if locator_file is None:
+        return None
+    return json.loads(locator_file.read_text(encoding="utf-8"))
+
+
+def load_navigation_map(navigation_map_path: Path | None = None) -> Dict[str, List[Dict[str, Any]]]:
+    """Load artifacts/navigation_output/navigation_map.json, keyed by normalized screen name."""
+    navigation_map_path = navigation_map_path or (ARTIFACTS_ROOT / "navigation_output" / "navigation_map.json")
+    if not navigation_map_path.exists():
+        return {}
+    raw = json.loads(navigation_map_path.read_text(encoding="utf-8"))
+    return {_normalize_screen_key(key): steps for key, steps in raw.items()}
+
+
+def load_navigation_steps(screen_name: str, navigation_map: Dict[str, List[Dict[str, Any]]] | None = None) -> List[Dict[str, Any]]:
+    """Look up the navigation steps for one screen from an already-loaded map (or load fresh)."""
+    navigation_map = navigation_map if navigation_map is not None else load_navigation_map()
+    return navigation_map.get(_normalize_screen_key(screen_name), [])
 
 from agents.core.appium_agent import AppiumScriptAgent
 
@@ -113,6 +161,74 @@ def _snake_case(name: str) -> str:
     return "_".join(w.lower() for w in _words(name))
 
 
+_LOCATOR_STRATEGY_TO_APPIUMBY = {
+    "resource_id": "AppiumBy.ID",
+    "id": "AppiumBy.ID",
+    "accessibility_id": "AppiumBy.ACCESSIBILITY_ID",
+    "android_uiautomator": "AppiumBy.ANDROID_UIAUTOMATOR",
+    "text": "AppiumBy.ANDROID_UIAUTOMATOR",
+}
+
+
+def _locator_lookup_key(label: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", str(label or "").lower())
+
+
+def build_locator_map(locator_payload: Dict[str, Any] | None) -> Dict[str, Dict[str, Any]]:
+    """Index a locator_output payload (from LocatorAgent) by normalized element label,
+    so the generator can look up the real strategy/value discovered for an element
+    instead of falling back to a guessed accessibility id."""
+    if not locator_payload:
+        return {}
+    lookup: Dict[str, Dict[str, Any]] = {}
+    for element in locator_payload.get("elements") or []:
+        label = element.get("element") or element.get("label")
+        if not label:
+            continue
+        lookup[_locator_lookup_key(label)] = element
+    return lookup
+
+
+def _resolve_locator(
+    locator_map: Dict[str, Dict[str, Any]], label: str, fallback_value: str
+) -> tuple[str, str]:
+    """Return (appiumby_constant, locator_value) for a label, preferring a real
+    locator resolved by the locator agent over the guessed accessibility-id fallback."""
+    entry = locator_map.get(_locator_lookup_key(label))
+    if entry:
+        strategy = str(entry.get("locator_strategy") or "").lower()
+        value = entry.get("locator_value")
+        if strategy and value:
+            appiumby = _LOCATOR_STRATEGY_TO_APPIUMBY.get(strategy)
+            if strategy == "text":
+                return "AppiumBy.ANDROID_UIAUTOMATOR", f'new UiSelector().text("{value}")'
+            if appiumby:
+                return appiumby, str(value)
+    return "AppiumBy.ACCESSIBILITY_ID", fallback_value
+
+
+def _render_navigate_method(navigation_steps: List[Dict[str, Any]] | None) -> List[str]:
+    """Render a navigate(self) method that drives the app from its home screen to
+    this one, using the resource-id/accessibility-id steps discovered by the
+    Navigation Agent. Every generated test must call this before touching the
+    screen's own locators - the app does not open directly on every screen."""
+    lines = ["    def navigate(self):"]
+    if not navigation_steps:
+        lines.append("        pass  # This screen is reachable directly from app launch.")
+        lines.append("")
+        return lines
+    for step in navigation_steps:
+        strategy = str(step.get("locator_strategy") or "").lower()
+        value = str(step.get("locator_value") or "").replace('"', '\\"')
+        appiumby = _LOCATOR_STRATEGY_TO_APPIUMBY.get(strategy, "AppiumBy.ACCESSIBILITY_ID")
+        if strategy == "text":
+            lines.append(f'        self.click((AppiumBy.ANDROID_UIAUTOMATOR, \'new UiSelector().text("{value}")\'))')
+        else:
+            lines.append(f'        self.click(({appiumby}, "{value}"))')
+    lines.append("")
+    return lines
+
+
 def _screen_contract(screen_name: str) -> Dict[str, str]:
     """Deterministic naming contract for a screen - computed by us, not left to the
     LLM to invent, so class/fixture/file names can never drift from what the pipeline
@@ -178,6 +294,24 @@ class OpenAIAppiumScriptAgent(AppiumScriptAgent):
         contract = _screen_contract(screen_name)
         ssm_json = json.dumps(ssm_data, indent=2)
         base_prompt = self._build_prompt(ssm_json, testcases_text, contract)
+        locator_data = kwargs.get("locator_data")
+        if locator_data:
+            base_prompt += (
+                "\n\nRESOLVED_LOCATORS (from the Locator Agent - use these exact "
+                "strategy/value pairs verbatim instead of guessing your own):\n"
+                f"{json.dumps(locator_data, indent=2)}"
+            )
+        navigation_steps = kwargs.get("navigation_steps")
+        base_prompt += (
+            "\n\nNAVIGATION_STEPS (from the Navigation Agent - the app does NOT open "
+            "directly on this screen; these are the exact taps required from the app's "
+            "home screen to reach it, or an empty list if this screen IS the home screen):\n"
+            f"{json.dumps(navigation_steps or [], indent=2)}\n"
+            "Add a `navigate(self)` method to the Page Object that performs exactly these "
+            "steps (empty body with `pass` if the list is empty), and make the pytest "
+            "fixture call `<page>.navigate()` immediately after constructing the page "
+            "object and before returning it, so every test starts from this screen."
+        )
         llm = self._get_llm()
 
         @tool("validate_pom_files")
@@ -262,7 +396,14 @@ class MockAppiumScriptAgent(AppiumScriptAgent):
             return f"tap{pascal_key}"
         return f"is{pascal_key}Visible"
 
-    def _build_page_object(self, contract: Dict[str, str], elements: List[Dict[str, Any]]) -> str:
+    def _build_page_object(
+        self,
+        contract: Dict[str, str],
+        elements: List[Dict[str, Any]],
+        locator_map: Dict[str, Dict[str, Any]] | None = None,
+        navigation_steps: List[Dict[str, Any]] | None = None,
+    ) -> str:
+        locator_map = locator_map or {}
         keys = [self._element_key(el, i) for i, el in enumerate(elements)]
         lines: List[str] = [
             "import os",
@@ -277,8 +418,15 @@ class MockAppiumScriptAgent(AppiumScriptAgent):
             '        "android": {',
         ]
         for el, key in zip(elements, keys):
-            value = str(el.get("label") or el.get("id") or key).replace('"', '\\"')
-            lines.append(f'            "{key}": (AppiumBy.ACCESSIBILITY_ID, "{value}"),  # LOCATOR_TODO: verify/replace once Locator Enrichment Agent resolves real selectors')
+            label = str(el.get("label") or el.get("id") or key)
+            fallback_value = label.replace('"', '\\"')
+            appiumby, resolved_value = _resolve_locator(locator_map, label, fallback_value)
+            resolved_value = str(resolved_value).replace('"', '\\"')
+            if appiumby == "AppiumBy.ACCESSIBILITY_ID" and resolved_value == fallback_value:
+                comment = "  # LOCATOR_TODO: verify/replace once Locator Enrichment Agent resolves real selectors"
+            else:
+                comment = ""
+            lines.append(f'            "{key}": ({appiumby}, "{resolved_value}"),{comment}')
         lines.extend([
             "        },",
             '        "ios": {},  # LOCATOR_TODO: populate when iOS support is implemented',
@@ -290,6 +438,7 @@ class MockAppiumScriptAgent(AppiumScriptAgent):
             "        return self.LOCATORS[self.PLATFORM][key]",
             "",
         ])
+        lines.extend(_render_navigate_method(navigation_steps))
         for el, key in zip(elements, keys):
             method = self._action_method_name(el, key)
             actions = [str(a).lower() for a in el.get("actions") or []]
@@ -324,7 +473,9 @@ class MockAppiumScriptAgent(AppiumScriptAgent):
             "",
             "@pytest.fixture",
             f"def {contract['fixture_name']}(driver):",
-            f"    return {contract['class_name']}(driver)",
+            f"    page = {contract['class_name']}(driver)",
+            "    page.navigate()",
+            "    return page",
             "",
             "",
         ]
@@ -352,9 +503,11 @@ class MockAppiumScriptAgent(AppiumScriptAgent):
         screen_name = ssm_data.get("screen_name") or "Screen"
         elements = ssm_data.get("elements", [])
         contract = _screen_contract(screen_name)
+        locator_map = build_locator_map(kwargs.get("locator_data"))
+        navigation_steps = kwargs.get("navigation_steps")
 
         return {
-            contract["page_file"]: self._build_page_object(contract, elements),
+            contract["page_file"]: self._build_page_object(contract, elements, locator_map, navigation_steps),
             contract["test_file"]: self._build_test_module(contract, screen_name, elements, testcases_text),
         }
 

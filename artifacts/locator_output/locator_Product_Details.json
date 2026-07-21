@@ -6,33 +6,28 @@
       "element_type": "image",
       "action": "verify",
       "locator_strategy": "resource_id",
-      "locator_value": "com.saucelabs.mydemoapp.android:id/productIV",
-      "confidence": 0.42
+      "locator_value": "com.saucelabs.mydemoapp.android:id/productIV"
     },
     {
       "element": "Product title",
-      "element_type": "static_text",
+      "element_type": "text",
       "action": "verify",
       "locator_strategy": "resource_id",
-      "locator_value": "com.saucelabs.mydemoapp.android:id/productTV",
-      "confidence": 0.38
+      "locator_value": "com.saucelabs.mydemoapp.android:id/productTV"
     },
     {
       "element": "Price",
-      "element_type": "static_text",
+      "element_type": "text",
       "action": "verify",
       "locator_strategy": "resource_id",
-      "locator_value": "com.saucelabs.mydemoapp.android:id/priceTV",
-      "confidence": 0.36
+      "locator_value": "com.saucelabs.mydemoapp.android:id/priceTV"
     },
     {
       "element": "Add to Cart",
       "element_type": "button",
       "action": "tap",
       "locator_strategy": "resource_id",
-      "locator_value": "com.saucelabs.mydemoapp.android:id/cartBt",
-      "confidence": 0.34
+      "locator_value": "com.saucelabs.mydemoapp.android:id/cartBt"
     }
-    
   ]
 }
