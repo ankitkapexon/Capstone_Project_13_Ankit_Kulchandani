@@ -1,0 +1,28 @@
+{
+  "screen": "Login",
+  "elements": [
+    {
+      "element": "Username",
+      "element_type": "textfield",
+      "action": "type",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/nameET",
+      "input_value": ""
+    },
+    {
+      "element": "Password",
+      "element_type": "textfield",
+      "action": "type",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/passwordET",
+      "input_value": ""
+    },
+    {
+      "element": "Login",
+      "element_type": "button",
+      "action": "tap",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/loginBtn"
+    }
+  ]
+}

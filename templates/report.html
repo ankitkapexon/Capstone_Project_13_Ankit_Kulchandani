@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Execution Report</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; color: #222; }
+      .card { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; background: #fafafa; }
+      .pill { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px; background: #e8f0fe; }
+      pre { background: #fff; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Execution Report</h1>
+      <p><span class="pill">Status: {{status}}</span></p>
+      <p><strong>Summary:</strong> {{summary}}</p>
+      <p><strong>App:</strong> {{app_name}}</p>
+      <pre>{{script_preview}}</pre>
+    </div>
+  </body>
+</html>

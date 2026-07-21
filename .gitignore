@@ -4,3 +4,9 @@ __pycache__/
 *.py[cod]
 *.env
 .venv/
+
+# Regenerated per-run outputs - not source of truth, re-created by the pipeline/API
+artifacts/reports/*.json
+artifacts/reports/*.html
+artifacts/logs/
+reports/*.json

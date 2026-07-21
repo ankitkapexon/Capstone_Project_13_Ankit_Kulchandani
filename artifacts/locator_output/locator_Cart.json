@@ -1,0 +1,47 @@
+{
+  "screen": "Cart",
+  "elements": [
+    {
+      "element": "Cart title",
+      "element_type": "text",
+      "action": "verify",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/productTV"
+    },
+    {
+      "element": "Cart items",
+      "element_type": "list",
+      "action": "scroll",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/productRV"
+    },
+    {
+      "element": "Quantity controls",
+      "element_type": "stepper",
+      "action": "tap",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/plusIV"
+    },
+    {
+      "element": "Remove item",
+      "element_type": "button",
+      "action": "tap",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/removeBt"
+    },
+    {
+      "element": "Subtotal",
+      "element_type": "text",
+      "action": "verify",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/totalPriceTV"
+    },
+    {
+      "element": "Checkout",
+      "element_type": "button",
+      "action": "tap",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/cartBt"
+    }
+  ]
+}

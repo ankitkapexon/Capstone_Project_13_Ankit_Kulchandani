@@ -1,0 +1,26 @@
+{
+  "screen": "Product Listing",
+  "elements": [
+    {
+      "element": "Sort",
+      "element_type": "button",
+      "action": "tap",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/sortIV"
+    },
+    {
+      "element": "Product grid",
+      "element_type": "list",
+      "action": "scroll",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/productRV"
+    },
+    {
+      "element": "Product item",
+      "element_type": "card",
+      "action": "tap",
+      "locator_strategy": "resource_id",
+      "locator_value": "com.saucelabs.mydemoapp.android:id/productIV"
+    }
+  ]
+}
