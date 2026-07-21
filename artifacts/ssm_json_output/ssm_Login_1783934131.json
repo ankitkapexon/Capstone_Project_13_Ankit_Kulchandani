@@ -12,7 +12,7 @@
         "enter_text"
       ],
       "bbox": null,
-      "confidence": 0.63,
+      "confidence": 0.73,
       "metadata": {}
     },
     {
@@ -23,7 +23,7 @@
         "enter_text"
       ],
       "bbox": null,
-      "confidence": 0.63,
+      "confidence": 0.73,
       "metadata": {}
     },
     {
@@ -34,7 +34,7 @@
         "tap"
       ],
       "bbox": null,
-      "confidence": 0.68,
+      "confidence": 0.84,
       "metadata": {}
     }
   ],

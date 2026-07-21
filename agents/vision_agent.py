@@ -93,11 +93,62 @@ class OpenAIVisionAgent(VisionAgent):
     def _build_prompt(self, image_b64: str, filename: str | None = None) -> str:
         if self.prompt_template:
             return self.prompt_template.replace("{{image_b64}}", image_b64).replace("{{filename}}", filename or "image")
-        return (
-            "You are a screen understanding assistant. Given the base64-encoded image, return a JSON object"
-            " that matches the ScreenSemanticModel schema. Respond ONLY with JSON. The image is provided as a"
-            " base64 string in the prompt.\n\nIMAGE_BASE64:\n" + image_b64
-        )
+    
+        return f"""
+                You are an expert Mobile UI Understanding Assistant.
+
+                Analyze the mobile app screenshot and return ONLY valid JSON matching the ScreenSemanticModel schema.
+
+                Rules:
+
+                1. Detect every visible UI element.
+
+                2. IMPORTANT:
+                If a label is immediately followed by an editable text box, treat them as TWO separate elements.
+
+                Example:
+
+                Username
+                [ empty input box ]
+
+                Generate:
+
+                {
+                "label": "Username",
+                "type": "label"
+                }
+
+                {
+                "label": "Username Input",
+                "type": "textfield"
+                }
+
+                Similarly:
+
+                Password
+                [ empty input box ]
+
+                Generate:
+
+                {
+                "label": "Password",
+                "type": "label"
+                }
+
+                {
+                "label": "Password Input",
+                "type": "password_field"
+                }
+
+                Buttons remain buttons.
+
+                Never classify a label as a text field.
+
+                Respond ONLY with valid JSON.
+
+                IMAGE_BASE64:
+                {image_b64}
+                """
 
     def analyze_image(self, image_path: str, **kwargs) -> Dict[str, Any]:
         self.validate_configuration()

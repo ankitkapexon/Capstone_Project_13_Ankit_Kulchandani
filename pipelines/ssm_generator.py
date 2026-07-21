@@ -18,9 +18,20 @@ load_environment()
 
 def run(image_path: str, out_dir: str = "artifacts/ssm_json_output", clean: bool = False) -> Path:
     provider = os.getenv("VISION_AGENT_PROVIDER", "mock")
+
     prompt_path = Path("prompts/vision_analysis.txt")
-    prompt_template = prompt_path.read_text(encoding="utf-8") if prompt_path.exists() else None
-    agent = create_vision_agent(provider=provider, prompt_template=prompt_template)
+    prompt_template = (
+        prompt_path.read_text(encoding="utf-8")
+        if prompt_path.exists()
+        else None
+)
+    agent = create_vision_agent(
+    provider=provider,
+    prompt_template=prompt_template,
+)
+    print("VISION_AGENT_PROVIDER =", provider)
+    print("Agent =", type(agent).__name__)
+
     raw = agent.analyze_image(image_path)
 
     ssm = ScreenSemanticModel.model_validate(raw)

@@ -7,13 +7,13 @@
     {
       "id": null,
       "label": "Search",
-      "type": "search_field",
+      "type": "searchbar",
       "actions": [
         "tap",
         "enter_text"
       ],
       "bbox": null,
-      "confidence": 0.22,
+      "confidence": 0.52,
       "metadata": {}
     },
     {
@@ -24,7 +24,7 @@
         "tap"
       ],
       "bbox": null,
-      "confidence": 0.18,
+      "confidence": 0.41,
       "metadata": {}
     },
     {
@@ -35,18 +35,40 @@
         "tap"
       ],
       "bbox": null,
-      "confidence": 0.16,
+      "confidence": 0.38,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Product grid",
+      "type": "list",
+      "actions": [
+        "scroll"
+      ],
+      "bbox": null,
+      "confidence": 0.57,
       "metadata": {}
     },
     {
       "id": null,
       "label": "Product item",
-      "type": "product_card",
+      "type": "card",
       "actions": [
         "tap"
       ],
       "bbox": null,
-      "confidence": 0.31,
+      "confidence": 0.56,
+      "metadata": {}
+    },
+    {
+      "id": null,
+      "label": "Add to cart",
+      "type": "button",
+      "actions": [
+        "tap"
+      ],
+      "bbox": null,
+      "confidence": 0.44,
       "metadata": {}
     }
   ],
